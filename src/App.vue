@@ -1,17 +1,45 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <input v-model.lazy="searchString">
+    <p>{{searchResults.length}}</p>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import AzureSearch from 'azure-search';
 
 export default {
   name: 'app',
-  components: {
-    HelloWorld,
+  data() {
+    return {
+      searchResults: [],
+      facets: [],
+      searchString: '*',
+      client: AzureSearch({
+        url: process.env.VUE_APP_SEARCHURL,
+        key: process.env.VUE_APP_SEARCHKEY,
+      }),
+    };
+  },
+  methods: {
+    executeSearch() {
+      this.client.search('realestate-us-sample-index', { search: this.searchString, top: 100, facets: ['beds', 'baths'] }, (err, results, raw) => {
+        console.log(raw);
+        this.facets = raw['@search.facets'];
+        this.searchResults = raw.value;
+      });
+    },
+  },
+  watch: {
+    searchString: {
+      immediate: true,
+      handler() {
+        this.executeSearch();
+      },
+    },
+  },
+  mounted() {
+    this.executeSearch();
   },
 };
 </script>
