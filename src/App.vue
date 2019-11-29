@@ -1,48 +1,24 @@
 <template>
   <div id="app">
-    <input v-model.lazy="searchString">
-    <p>{{searchResults.length}}</p>
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import AzureSearch from 'azure-search';
+// import { mapState } from 'vuex';
 
 export default {
   name: 'app',
-  data() {
-    return {
-      searchResults: [],
-      facets: [],
-      searchString: '*',
-      client: AzureSearch({
-        url: process.env.VUE_APP_SEARCHURL,
-        key: process.env.VUE_APP_SEARCHKEY,
-      }),
-    };
-  },
-  methods: {
-    executeSearch() {
-      this.client.search('realestate-us-sample-index', { search: this.searchString, top: 100, facets: ['beds', 'baths'] }, (err, results, raw) => {
-        console.log(raw);
-        this.facets = raw['@search.facets'];
-        this.searchResults = raw.value;
-      });
-    },
-  },
-  watch: {
-    searchString: {
-      immediate: true,
-      handler() {
-        this.executeSearch();
-      },
-    },
-  },
   mounted() {
-    this.executeSearch();
+    this.$store.dispatch('executeSearch');
   },
 };
 </script>
+
 
 <style>
 #app {
@@ -51,6 +27,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>
