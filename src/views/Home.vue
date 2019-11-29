@@ -1,18 +1,29 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <input v-model.lazy="searchString"/>
+    <p>{{results.length}}</p>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+// import { mapState } from 'vuex';
 
 export default {
   name: 'home',
-  components: {
-    HelloWorld,
+  computed: {
+    searchString: {
+      get() {
+        return this.$store.state.searchString;
+      },
+      set(value) {
+        this.$store.dispatch('setSearchString', value);
+      },
+    },
+    results: {
+      get() {
+        return this.$store.state.results;
+      },
+    },
   },
 };
 </script>

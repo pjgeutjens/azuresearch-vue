@@ -8,6 +8,18 @@
   </div>
 </template>
 
+<script>
+// import { mapState } from 'vuex';
+
+export default {
+  name: 'app',
+  mounted() {
+    this.$store.dispatch('executeSearch');
+  },
+};
+</script>
+
+
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
