@@ -36,7 +36,7 @@ export default new Vuex.Store({
     SET_FILTERSTRING(state) {
       debugger;
       console.log('SET_FS');
-      const allFilters = [];
+      let allFilters = [];
       let allFiltersString = '';
       const keys = Object.keys(state.filters);
       keys.map((key) => {
@@ -46,6 +46,7 @@ export default new Vuex.Store({
         filterString += filterArray.join(' or ');
         return allFilters.push(filterString);
       });
+      allFilters = allFilters.filter(f => f.length !== 0);
       allFiltersString = allFilters.join(' and ');
       state.filterString = allFiltersString;
     },
