@@ -9,9 +9,12 @@
           <b-card-text>
             {{item.description}}
           </b-card-text>
-          <b-card-text>
-
+          <b-card-text class="stats">
+            <font-awesome-icon icon="money-bill-alt" /> {{item.price}}
+            <font-awesome-icon icon="bed" /> {{item.beds}}
+            <font-awesome-icon icon="bath" /> {{item.baths}}
           </b-card-text>
+
         </b-card-body>
       </b-col>
     </b-row>
@@ -55,3 +58,8 @@ export default {
   ],
 };
 </script>
+<style scoped>
+  .stats {text-align:justify; position: relative; top: 75%;}
+  .stats:after { content:' '; display:inline-block; width: 100%; height: 0 }
+  .stats > svg {display:inline-block}
+</style>

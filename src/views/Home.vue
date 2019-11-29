@@ -5,7 +5,9 @@
       <b-input-group>
         <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
         <b-input-group-append>
-          <b-button variant="info" @click="executeSearch"><search-icon></search-icon></b-button>
+          <b-button variant="info" @click="executeSearch">
+            <font-awesome-icon icon="search" />
+          </b-button>
         </b-input-group-append>
       </b-input-group>
     </nav>
@@ -15,7 +17,7 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                  <inbox-icon></inbox-icon>
+                  <font-awesome-icon icon="globe" />
                   {{results.length}}
               </li>
               <li v-for="facet in facets" :key="facet.value">
@@ -35,15 +37,12 @@
 </template>
 
 <script>
-import { InboxIcon, SearchIcon } from 'vue-feather-icons';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
 import ResultItem from '@/components/ResultItem.vue';
 
 export default {
   name: 'home',
   components: {
-    InboxIcon,
-    SearchIcon,
     CheckboxFacet,
     ResultItem,
   },
