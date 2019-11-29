@@ -24,6 +24,11 @@
             </ul>
           </div>
         </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+          <b-card-group deck>
+          <ResultItem v-for="result in results" :item="result" :key="result"/>
+          </b-card-group>
+        </main>
       </div>
     </div>
   </div>
@@ -32,6 +37,7 @@
 <script>
 import { InboxIcon, SearchIcon } from 'vue-feather-icons';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
+import ResultItem from '@/components/ResultItem.vue';
 
 export default {
   name: 'home',
@@ -39,6 +45,7 @@ export default {
     InboxIcon,
     SearchIcon,
     CheckboxFacet,
+    ResultItem,
   },
   methods: {
     executeSearch() {
