@@ -34,18 +34,28 @@ export default new Vuex.Store({
       state.filters[payload.facet] = payload.selected;
     },
     SET_FILTERSTRING(state) {
+      debugger;
       console.log('SET_FS');
-      let filterString = '$filter=';
-      const filterArray = [];
+      const allFilters = [];
+      let allFiltersString = '';
       const keys = Object.keys(state.filters);
-      keys.map(key => state.filters[key].map(selectedValue => filterArray.push(`${key} eq ${selectedValue}`)));
-      filterString += filterArray.join(' or ');
-      state.filterString = filterString;
+      keys.map((key) => {
+        const filterArray = [];
+        let filterString = '';
+        state.filters[key].map(selectedValue => filterArray.push(`${key} eq ${selectedValue}`));
+        filterString += filterArray.join(' or ');
+        return allFilters.push(filterString);
+      });
+      allFiltersString = allFilters.join(' and ');
+      state.filterString = allFiltersString;
     },
   },
   actions: {
     executeSearch({ state, commit }) {
-      searchClient.search('realestate-us-sample-index', { search: `${state.searchString}${state.filterString}`, top: 300, facets: ['beds', 'baths'] }, (err, results, raw) => {
+      searchClient.search('realestate-us-sample-index', {
+        search: `${state.searchString}`, filter: `${state.filterString}`, top: 300, facets: ['beds', 'baths'],
+      }, (err, results, raw) => {
+        console.log(raw);
         commit('SET_RESULTS', raw.value);
         commit('SET_FACETS', raw['@search.facets']);
       });
@@ -61,8 +71,9 @@ export default new Vuex.Store({
       dispatch('setFilterString');
     },
 
-    setFilterString({ commit }) {
+    setFilterString({ dispatch, commit }) {
       commit('SET_FILTERSTRING');
+      dispatch('executeSearch');
     },
   },
   getters: {
