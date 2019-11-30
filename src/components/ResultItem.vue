@@ -11,6 +11,7 @@
           </b-card-text>
           <b-card-text class="stats">
             <font-awesome-icon icon="money-bill-alt" /> {{item.price}}
+            <font-awesome-icon icon="arrows-alt" /> {{item.sqft}}
             <font-awesome-icon icon="bed" /> {{item.beds}}
             <font-awesome-icon icon="bath" /> {{item.baths}}
           </b-card-text>

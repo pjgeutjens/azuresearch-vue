@@ -2,14 +2,6 @@
   <div>
     <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
-      <b-input-group>
-        <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
-        <b-input-group-append>
-          <b-button variant="info" @click="executeSearch">
-            <font-awesome-icon icon="search" />
-          </b-button>
-        </b-input-group-append>
-      </b-input-group>
     </nav>
     <div class="container-fluid">
       <div class="row">
@@ -17,8 +9,40 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                  <font-awesome-icon icon="globe" />
-                  {{results.length}}
+                <b-list-group>
+                  <b-list-group-item>
+                    <b-input-group>
+                      <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
+                      <b-input-group-append>
+                        <b-button variant="info" @click="executeSearch">
+                          <font-awesome-icon icon="search" />
+                        </b-button>
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <b-input-group append="Per Page">
+                      <b-form-select v-model="resultsPerPage" :options="perPageOptions">
+                        <template v-slot:first>
+                          <option :value="null" disabled>-- Results Per Page --</option>
+                        </template>
+                      </b-form-select>
+                    </b-input-group>
+                  </b-list-group-item>
+                  <b-list-group-item style="text-align: center;">
+                    <b-pagination
+                      v-model="currentPage"
+                      :total-rows="resultsCount"
+                      :per-page="resultsPerPage"
+                      aria-controls="results-group">
+                    </b-pagination>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <span>
+                      Showing {{showingStart}} - {{showingEnd}} of {{resultsCount}} results
+                    </span>
+                  </b-list-group-item>
+                </b-list-group>
               </li>
               <li v-for="facet in facets" :key="facet.value">
                 <CheckboxFacet v-bind:facet="facet" />
@@ -27,8 +51,8 @@
           </div>
         </nav>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          <b-card-group deck>
-          <ResultItem v-for="result in results" :item="result" :key="result"/>
+          <b-card-group deck id="results-group">
+            <ResultItem v-for="result in results" :item="result" :key="result.listingId"/>
           </b-card-group>
         </main>
       </div>
@@ -37,6 +61,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
 import ResultItem from '@/components/ResultItem.vue';
 
@@ -46,12 +71,49 @@ export default {
     CheckboxFacet,
     ResultItem,
   },
+  data() {
+    return {
+      perPageOptions: [
+        { text: '10', value: 10, disabled: false },
+        { text: '50', value: 50, disabled: false },
+        { text: '100', value: 100, disabled: false },
+      ],
+    };
+  },
   methods: {
     executeSearch() {
       this.$store.dispatch('setSearchString', this.searchString);
     },
   },
   computed: {
+    ...mapState([
+      'resultsCount',
+    ]),
+    showingStart() {
+      return 1 + ((this.currentPage - 1) * this.resultsPerPage);
+    },
+    showingEnd() {
+      return this.currentPage * this.resultsPerPage;
+    },
+    rows() {
+      return this.results.length;
+    },
+    currentPage: {
+      get() {
+        return this.$store.state.currentPage;
+      },
+      set(value) {
+        this.$store.dispatch('setCurrentPage', value);
+      },
+    },
+    resultsPerPage: {
+      get() {
+        return this.$store.state.resultsPerPage;
+      },
+      set(value) {
+        this.$store.dispatch('setResultsPerPage', value);
+      },
+    },
     searchString: {
       get() {
         return this.$store.state.searchString;
