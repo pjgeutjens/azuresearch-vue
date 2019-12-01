@@ -8,35 +8,8 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
-              <li class="nav-item">
+              <li class="nav-item col-12">
                 <b-list-group>
-                  <b-list-group-item>
-                    <b-input-group>
-                      <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
-                      <b-input-group-append>
-                        <b-button variant="info" @click="executeSearch">
-                          <font-awesome-icon icon="search" />
-                        </b-button>
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-list-group-item>
-                  <b-list-group-item>
-                    <b-input-group append="Per Page">
-                      <b-form-select v-model="resultsPerPage" :options="perPageOptions">
-                        <template v-slot:first>
-                          <option :value="null" disabled>-- Results Per Page --</option>
-                        </template>
-                      </b-form-select>
-                    </b-input-group>
-                  </b-list-group-item>
-                  <b-list-group-item style="text-align: center;">
-                    <b-pagination
-                      v-model="currentPage"
-                      :total-rows="resultsCount"
-                      :per-page="resultsPerPage"
-                      aria-controls="results-group">
-                    </b-pagination>
-                  </b-list-group-item>
                   <b-list-group-item>
                     <span>
                       Showing {{showingStart}} - {{showingEnd}} of {{resultsCount}} results
@@ -44,16 +17,54 @@
                   </b-list-group-item>
                 </b-list-group>
               </li>
-              <li v-for="facet in facets" :key="facet.value">
+              <li v-for="facet in facets" :key="facet.value" class="nav-item col-12">
                 <CheckboxFacet v-bind:facet="facet" />
               </li>
             </ul>
           </div>
         </nav>
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          <b-card-group deck id="results-group">
-            <ResultItem v-for="result in results" :item="result" :key="result.listingId"/>
-          </b-card-group>
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
+          <b-row>
+            <b-col cols="6">
+              <b-input-group>
+                      <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
+                      <b-input-group-append>
+                        <b-button variant="info" @click="executeSearch">
+                          <font-awesome-icon icon="search" />
+                        </b-button>
+                      </b-input-group-append>
+                      <b-input-group-append>
+                        <b-button variant="primary" @click="resetSearchString">
+                          <font-awesome-icon icon="undo" />
+                        </b-button>
+                      </b-input-group-append>
+                    </b-input-group>
+            </b-col>
+            <b-col>
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="resultsCount"
+                :per-page="resultsPerPage"
+                aria-controls="results-group">
+              </b-pagination>
+            </b-col>
+            <b-col cols="2">
+              <b-input-group append="Per Page">
+                <b-form-select v-model="resultsPerPage" :options="perPageOptions">
+                  <template v-slot:first>
+                    <option :value="null" disabled>-- Results Per Page --</option>
+                  </template>
+                </b-form-select>
+              </b-input-group>
+            </b-col>
+            <b-col></b-col>
+
+          </b-row>
+          <div class="row">
+            <b-card-group deck id="results-group">
+              <ResultItem v-for="result in results" :item="result" :key="result.listingId"/>
+            </b-card-group>
+          </div>
         </main>
       </div>
     </div>
@@ -84,6 +95,9 @@ export default {
     executeSearch() {
       this.$store.dispatch('setSearchString', this.searchString);
     },
+    resetSearchString() {
+      this.$store.dispatch('setSearchString');
+    },
   },
   computed: {
     ...mapState([
@@ -93,7 +107,7 @@ export default {
       return 1 + ((this.currentPage - 1) * this.resultsPerPage);
     },
     showingEnd() {
-      return this.currentPage * this.resultsPerPage;
+      return Math.min(this.currentPage * this.resultsPerPage, this.resultsCount);
     },
     rows() {
       return this.results.length;
@@ -152,6 +166,14 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+
+  .sidebar {
+    padding-top: 5px;
+  }
+
+  main {
+    margin-top: 5px;
   }
 
   @media (min-width: 768px) {

@@ -73,7 +73,7 @@ export default new Vuex.Store({
       });
     },
 
-    setSearchString({ dispatch, commit }, value) {
+    setSearchString({ dispatch, commit }, value = '*') {
       commit('SET_CURRENT_PAGE', 1);
       commit('SET_SEARCHSTRING', value);
       dispatch('executeSearch');
