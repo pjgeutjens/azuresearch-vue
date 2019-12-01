@@ -7,6 +7,12 @@ To be used with an Azure Search Index containing realestate-us-sample data as se
 ```
 yarn install
 ```
+### Setting up environment variables
+Create a .env file containing the following values
+```
+VUE_APP_SEARCHURL=<your search service url>
+VUE_APP_SEARCHKEY=<your query key>
+```
 
 ### Compiles and hot-reloads for development
 ```
