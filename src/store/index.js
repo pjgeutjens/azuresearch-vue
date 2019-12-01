@@ -12,6 +12,9 @@ export default new Vuex.Store({
     filters: {},
     searchString: '*',
     filterString: '',
+    currentPage: 1,
+    resultsPerPage: 10,
+    resultsCount: 0,
   },
   mutations: {
     SET_RESULTS(state, data) {
@@ -34,8 +37,6 @@ export default new Vuex.Store({
       state.filters[payload.facet] = payload.selected;
     },
     SET_FILTERSTRING(state) {
-      debugger;
-      console.log('SET_FS');
       let allFilters = [];
       let allFiltersString = '';
       const keys = Object.keys(state.filters);
@@ -50,26 +51,48 @@ export default new Vuex.Store({
       allFiltersString = allFilters.join(' and ');
       state.filterString = allFiltersString;
     },
+    SET_CURRENT_PAGE(state, page) {
+      state.currentPage = page;
+    },
+    SET_RESULTS_PER_PAGE(state, count) {
+      state.resultsPerPage = count;
+    },
+    SET_RESULTS_COUNT(state, count) {
+      state.resultsCount = count;
+    },
   },
   actions: {
     executeSearch({ state, commit }) {
       searchClient.search('realestate-us-sample-index', {
-        search: `${state.searchString}`, filter: `${state.filterString}`, top: 300, facets: ['beds', 'baths'],
+        search: `${state.searchString}`, filter: `${state.filterString}`, top: state.resultsPerPage, skip: (state.currentPage - 1) * state.resultsPerPage, facets: ['beds', 'baths'], count: true,
       }, (err, results, raw) => {
         console.log(raw);
         commit('SET_RESULTS', raw.value);
         commit('SET_FACETS', raw['@search.facets']);
+        commit('SET_RESULTS_COUNT', raw['@odata.count']);
       });
     },
 
-    setSearchString({ dispatch, commit }, value) {
+    setSearchString({ dispatch, commit }, value = '*') {
+      commit('SET_CURRENT_PAGE', 1);
       commit('SET_SEARCHSTRING', value);
       dispatch('executeSearch');
     },
 
     setFilter({ dispatch, commit }, payload) {
+      commit('SET_CURRENT_PAGE', 1);
       commit('SET_FILTER', payload);
       dispatch('setFilterString');
+    },
+
+    setCurrentPage({ dispatch, commit }, page) {
+      commit('SET_CURRENT_PAGE', page);
+      dispatch('executeSearch');
+    },
+
+    setResultsPerPage({ dispatch, commit }, count) {
+      commit('SET_RESULTS_PER_PAGE', count);
+      dispatch('executeSearch');
     },
 
     setFilterString({ dispatch, commit }) {

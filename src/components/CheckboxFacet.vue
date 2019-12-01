@@ -1,14 +1,18 @@
 <template>
-  <b-form-group>
-      <h4>{{ facet.field }}</h4>
-      <hr>
-      <b-form-checkbox-group
+  <b-form-group :disabled="options.length <= 1 && selected.length == 0">
+      <b-list-group>
+        <b-list-group-item>{{facet.field}}</b-list-group-item>
+        <b-list-group-item>
+          <b-form-checkbox-group
         v-model="selected"
         :options="options"
         name="facet.field"
         stacked
       >
       </b-form-checkbox-group>
+        </b-list-group-item>
+      </b-list-group>
+
     </b-form-group>
 </template>
 
