@@ -17,7 +17,7 @@
                   </b-list-group-item>
                 </b-list-group>
               </li>
-              <li v-for="facet in facets" :key="facet.value" class="nav-item col-12">
+              <li v-for="facet in checkbox_facets" :key="facet.value" class="nav-item col-12">
                 <CheckboxFacet v-bind:facet="facet" />
               </li>
             </ul>
@@ -102,6 +102,7 @@ export default {
   computed: {
     ...mapState([
       'resultsCount',
+      'ranges',
     ]),
     showingStart() {
       return 1 + ((this.currentPage - 1) * this.resultsPerPage);
@@ -149,9 +150,9 @@ export default {
         return this.$store.state.results;
       },
     },
-    facets: {
+    checkbox_facets: {
       get() {
-        return this.$store.state.facets;
+        return this.$store.state.checkbox_facets;
       },
     },
   },

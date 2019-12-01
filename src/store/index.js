@@ -2,13 +2,23 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import searchClient from '@/services/azsearchclient';
+import getFacetsFromEnv from '@/store/helpers';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     results: [],
-    facets: [],
+    checkbox_facets: [],
+    range_facets: [],
+    ranges: {
+      price: {
+        field: 'price',
+        interval: 100000,
+        min: 0,
+        max: Number.MAX_SAFE_INTEGER,
+      },
+    },
     filters: {},
     searchString: '*',
     filterString: '',
@@ -20,7 +30,7 @@ export default new Vuex.Store({
     SET_RESULTS(state, data) {
       state.results = data;
     },
-    SET_FACETS(state, data) {
+    SET_CHECKBOX_FACETS(state, data) {
       const resultArray = [];
       Object.entries(data).forEach((element) => {
         resultArray.push({
@@ -28,7 +38,7 @@ export default new Vuex.Store({
           values: element[1],
         });
       });
-      state.facets = resultArray;
+      state.checkbox_facets = resultArray;
     },
     SET_SEARCHSTRING(state, data) {
       state.searchString = data;
@@ -39,6 +49,7 @@ export default new Vuex.Store({
     SET_FILTERSTRING(state) {
       let allFilters = [];
       let allFiltersString = '';
+
       const keys = Object.keys(state.filters);
       keys.map((key) => {
         const filterArray = [];
@@ -47,8 +58,10 @@ export default new Vuex.Store({
         filterString += filterArray.join(' or ');
         return allFilters.push(filterString);
       });
+
       allFilters = allFilters.filter(f => f.length !== 0);
       allFiltersString = allFilters.join(' and ');
+      console.log(allFiltersString);
       state.filterString = allFiltersString;
     },
     SET_CURRENT_PAGE(state, page) {
@@ -60,17 +73,33 @@ export default new Vuex.Store({
     SET_RESULTS_COUNT(state, count) {
       state.resultsCount = count;
     },
+    SET_RANGE(state, payload) {
+      state.ranges[payload.range] = {
+        interval: 100,
+        min: payload.selected[0],
+        max: payload.selected[1],
+      };
+    },
   },
   actions: {
     executeSearch({ state, commit }) {
-      searchClient.search('realestate-us-sample-index', {
-        search: `${state.searchString}`, filter: `${state.filterString}`, top: state.resultsPerPage, skip: (state.currentPage - 1) * state.resultsPerPage, facets: ['beds', 'baths'], count: true,
-      }, (err, results, raw) => {
-        console.log(raw);
-        commit('SET_RESULTS', raw.value);
-        commit('SET_FACETS', raw['@search.facets']);
-        commit('SET_RESULTS_COUNT', raw['@odata.count']);
-      });
+      searchClient.search(
+        'realestate-us-sample-index',
+        {
+          search: `${state.searchString}`,
+          filter: `${state.filterString}`,
+          top: state.resultsPerPage,
+          skip: (state.currentPage - 1) * state.resultsPerPage,
+          facets: getFacetsFromEnv(),
+          count: true,
+        },
+        (err, results, raw) => {
+          console.log(raw);
+          commit('SET_RESULTS', raw.value);
+          commit('SET_CHECKBOX_FACETS', raw['@search.facets']);
+          commit('SET_RESULTS_COUNT', raw['@odata.count']);
+        },
+      );
     },
 
     setSearchString({ dispatch, commit }, value = '*') {
@@ -99,12 +128,15 @@ export default new Vuex.Store({
       commit('SET_FILTERSTRING');
       dispatch('executeSearch');
     },
+
+    setRange({ commit }, payload) {
+      commit('SET_RANGE', payload);
+      // dispatch('executeSearch');
+    },
   },
   getters: {
     searchString: state => state.searchString,
     filterString: state => state.filterString,
   },
-  modules: {
-
-  },
+  modules: {},
 });
