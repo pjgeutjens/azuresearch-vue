@@ -1,4 +1,7 @@
-# vue-search-tslint
+# azuresearch-vue
+
+A results viewer for Azure Cognitive Search implemented in Vue.
+To be used an Azure Search Index containing realestate-us-sample data as set up in this [Quickstart](https://docs.microsoft.com/en-us/azure/search/search-get-started-portal)
 
 ## Project setup
 ```
