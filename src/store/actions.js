@@ -15,7 +15,6 @@ export default {
         count: true,
       },
       (err, results, raw) => {
-        console.log(raw);
         commit('SET_RESULTS', raw.value);
         commit('SET_CHECKBOX_FACETS', raw['@search.facets']);
         commit('SET_RESULTS_COUNT', raw['@odata.count']);
@@ -31,8 +30,8 @@ export default {
 
   setFilter({ dispatch, commit }, payload) {
     commit('SET_CURRENT_PAGE', 1);
-    commit('SET_FILTER', payload);
-    dispatch('setFilterString');
+    commit('SET_FILTERS', payload);
+    dispatch('executeSearch');
   },
 
   setCurrentPage({ dispatch, commit }, page) {

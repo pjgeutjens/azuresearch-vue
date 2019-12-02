@@ -15,10 +15,9 @@ export default {
   SET_SEARCHSTRING(state, data) {
     state.searchString = data;
   },
-  SET_FILTER(state, payload) {
+  SET_FILTERS(state, payload) {
     state.filters[payload.facet] = payload.selected;
-  },
-  SET_FILTERSTRING(state) {
+
     let allFilters = [];
     let allFiltersString = '';
 
@@ -33,7 +32,6 @@ export default {
 
     allFilters = allFilters.filter(f => f.length !== 0);
     allFiltersString = allFilters.join(' and ');
-    console.log(allFiltersString);
     state.filterString = allFiltersString;
   },
   SET_CURRENT_PAGE(state, page) {
