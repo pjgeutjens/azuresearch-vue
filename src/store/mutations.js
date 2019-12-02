@@ -4,19 +4,43 @@ export default {
   },
   SET_CHECKBOX_FACETS(state, data) {
     const resultArray = [];
+    const facets = process.env.VUE_APP_CHECKBOX_FACETS;
     Object.entries(data).forEach((element) => {
-      resultArray.push({
-        field: element[0],
-        values: element[1],
-      });
+      if (facets.includes(element[0])) {
+        resultArray.push({
+          field: element[0],
+          values: element[1],
+        });
+      }
     });
     state.checkbox_facets = resultArray;
+  },
+  SET_DROPDOWN_FACETS(state, data) {
+    const resultArray = [];
+    const facets = process.env.VUE_APP_DROPDOWN_FACETS;
+
+    Object.entries(data).forEach((element) => {
+      if (facets.includes(element[0])) {
+        resultArray.push({
+          field: element[0],
+          values: element[1],
+        });
+      }
+    });
+    state.dropdown_facets = resultArray;
   },
   SET_SEARCHSTRING(state, data) {
     state.searchString = data;
   },
   SET_FILTERS(state, payload) {
-    state.filters[payload.facet] = payload.selected;
+    if (payload.selected == null) {
+      delete state.filters[payload.facet];
+    } else {
+      state.filters[payload.facet] = Array.isArray(payload.selected)
+        ? payload.selected
+        : payload.selected.split();
+    }
+
 
     let allFilters = [];
     let allFiltersString = '';
@@ -25,7 +49,7 @@ export default {
     keys.map((key) => {
       const filterArray = [];
       let filterString = '';
-      state.filters[key].map(selectedValue => filterArray.push(`${key} eq ${selectedValue}`));
+      state.filters[key].map(selectedValue => filterArray.push(`${key} eq '${selectedValue}'`));
       filterString += filterArray.join(' or ');
       return allFilters.push(filterString);
     });

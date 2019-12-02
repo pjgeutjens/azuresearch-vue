@@ -17,6 +17,9 @@
                   </b-list-group-item>
                 </b-list-group>
               </li>
+              <li v-for="facet in dropdown_facets" :key="facet.value" class="nav-item col-12">
+                <DropdownFacet v-bind:facet="facet" />
+              </li>
               <li v-for="facet in checkbox_facets" :key="facet.value" class="nav-item col-12">
                 <CheckboxFacet v-bind:facet="facet" />
               </li>
@@ -79,12 +82,14 @@
 <script>
 import { mapState } from 'vuex';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
+import DropdownFacet from '@/components/DropdownFacet.vue';
 import ResultItem from '@/components/ResultItem.vue';
 
 export default {
   name: 'home',
   components: {
     CheckboxFacet,
+    DropdownFacet,
     ResultItem,
   },
   data() {
@@ -112,7 +117,8 @@ export default {
   computed: {
     ...mapState([
       'resultsCount',
-      'ranges',
+      'checkbox_facets',
+      'dropdown_facets',
     ]),
     showingStart() {
       return 1 + ((this.currentPage - 1) * this.resultsPerPage);
@@ -168,11 +174,16 @@ export default {
         return this.$store.state.results;
       },
     },
-    checkbox_facets: {
-      get() {
-        return this.$store.state.checkbox_facets;
-      },
-    },
+    // checkbox_facets: {
+    //   get() {
+    //     return this.$store.state.checkbox_facets;
+    //   },
+    // },
+    // dropdown_facets: {
+    //   get() {
+    //     return this.$store.state.checkbox_facets;
+    //   },
+    // },
   },
 };
 </script>

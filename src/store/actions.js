@@ -15,8 +15,10 @@ export default {
         count: true,
       },
       (err, results, raw) => {
+        console.log(raw);
         commit('SET_RESULTS', raw.value);
         commit('SET_CHECKBOX_FACETS', raw['@search.facets']);
+        commit('SET_DROPDOWN_FACETS', raw['@search.facets']);
         commit('SET_RESULTS_COUNT', raw['@odata.count']);
       },
     );

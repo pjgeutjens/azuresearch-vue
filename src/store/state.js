@@ -2,6 +2,7 @@
 export default {
   results: [],
   checkbox_facets: [],
+  dropdown_facets: [],
   range_facets: [],
   filters: {},
   searchString: '*',
