@@ -25,8 +25,8 @@
         </nav>
         <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
           <b-row>
-            <b-col cols="6">
-              <b-input-group>
+            <b-col cols="4">
+              <b-input-group >
                       <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
                       <b-input-group-append>
                         <b-button variant="info" @click="executeSearch">
@@ -55,6 +55,11 @@
                     <option :value="null" disabled>-- Results Per Page --</option>
                   </template>
                 </b-form-select>
+              </b-input-group>
+            </b-col>
+            <b-col cols="2">
+              <b-input-group prepend="Sort">
+                <b-form-select v-model="orderBy" :options="orderByOptions"></b-form-select>
               </b-input-group>
             </b-col>
             <b-col></b-col>
@@ -88,6 +93,11 @@ export default {
         { text: '10', value: 10, disabled: false },
         { text: '50', value: 50, disabled: false },
         { text: '100', value: 100, disabled: false },
+      ],
+      orderByOptions: [
+        { text: 'Price Low To High', value: 'price asc', disabled: false },
+        { text: 'Price High to Low', value: 'price desc', disabled: false },
+        { text: 'Sqft High to Low', value: 'sqft desc', disabled: false },
       ],
     };
   },
@@ -127,6 +137,14 @@ export default {
       },
       set(value) {
         this.$store.dispatch('setResultsPerPage', value);
+      },
+    },
+    orderBy: {
+      get() {
+        return this.$store.state.orderBy;
+      },
+      set(value) {
+        this.$store.dispatch('setOrderBy', value);
       },
     },
     searchString: {
