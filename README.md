@@ -3,6 +3,12 @@
 A results viewer for Azure Cognitive Search implemented in Vue.
 To be used with an Azure Search Index containing realestate-us-sample data as set up in this [Quickstart](https://docs.microsoft.com/en-us/azure/search/search-get-started-portal)
 
+## Main third-party components used
+
+- [azure-search](https://www.npmjs.com/package/azure-search)
+- [BootstrapVue](https://bootstrap-vue.js.org/)
+- [vue-fontawesome](https://github.com/FortAwesome/vue-fontawesome)
+
 ## Project setup
 ```
 yarn install
