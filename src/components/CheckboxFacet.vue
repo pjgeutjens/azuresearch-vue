@@ -67,6 +67,11 @@ export default {
         this.options.find(o => o.value === v.value).count = v.count;
       });
     },
+    filters() {
+      if (!this.filters[this.facet.field]) {
+        this.selected = [];
+      }
+    },
   },
   computed: {
     ...mapState([

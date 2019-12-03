@@ -16,17 +16,24 @@
                     </span>
                   </b-list-group-item>
                 </b-list-group>
+                <ClearFilters />
+              </li>
+              <li v-for="facet in dropdown_facets" :key="facet.value" class="nav-item col-12">
+                <DropdownFacet v-bind:facet="facet" />
               </li>
               <li v-for="facet in checkbox_facets" :key="facet.value" class="nav-item col-12">
                 <CheckboxFacet v-bind:facet="facet" />
+              </li>
+              <li class="nav-item col-12">
+                <ClearFilters />
               </li>
             </ul>
           </div>
         </nav>
         <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
           <b-row>
-            <b-col cols="6">
-              <b-input-group>
+            <b-col cols="4">
+              <b-input-group >
                       <b-form-input lazy v-model="searchString" placeholder="Search"></b-form-input>
                       <b-input-group-append>
                         <b-button variant="info" @click="executeSearch">
@@ -57,6 +64,11 @@
                 </b-form-select>
               </b-input-group>
             </b-col>
+            <b-col cols="2">
+              <b-input-group prepend="Sort">
+                <b-form-select v-model="orderBy" :options="orderByOptions"></b-form-select>
+              </b-input-group>
+            </b-col>
             <b-col></b-col>
 
           </b-row>
@@ -74,12 +86,16 @@
 <script>
 import { mapState } from 'vuex';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
+import DropdownFacet from '@/components/DropdownFacet.vue';
+import ClearFilters from '@/components/ClearFilters.vue';
 import ResultItem from '@/components/ResultItem.vue';
 
 export default {
   name: 'home',
   components: {
     CheckboxFacet,
+    DropdownFacet,
+    ClearFilters,
     ResultItem,
   },
   data() {
@@ -89,6 +105,12 @@ export default {
         { text: '50', value: 50, disabled: false },
         { text: '100', value: 100, disabled: false },
       ],
+      orderByOptions: [
+        { text: 'Price Low To High', value: 'price asc', disabled: false },
+        { text: 'Price High to Low', value: 'price desc', disabled: false },
+        { text: 'Sqft High to Low', value: 'sqft desc', disabled: false },
+      ],
+      canClearFilters: false,
     };
   },
   methods: {
@@ -102,7 +124,9 @@ export default {
   computed: {
     ...mapState([
       'resultsCount',
-      'ranges',
+      'checkbox_facets',
+      'dropdown_facets',
+      'filtersActive',
     ]),
     showingStart() {
       return 1 + ((this.currentPage - 1) * this.resultsPerPage);
@@ -129,6 +153,14 @@ export default {
         this.$store.dispatch('setResultsPerPage', value);
       },
     },
+    orderBy: {
+      get() {
+        return this.$store.state.orderBy;
+      },
+      set(value) {
+        this.$store.dispatch('setOrderBy', value);
+      },
+    },
     searchString: {
       get() {
         return this.$store.state.searchString;
@@ -148,11 +180,6 @@ export default {
     results: {
       get() {
         return this.$store.state.results;
-      },
-    },
-    checkbox_facets: {
-      get() {
-        return this.$store.state.checkbox_facets;
       },
     },
   },
@@ -175,6 +202,11 @@ export default {
 
   main {
     margin-top: 5px;
+  }
+
+  a.action-link {
+    cursor: pointer;
+    color: lightblue !important;
   }
 
   @media (min-width: 768px) {
