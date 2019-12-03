@@ -49,7 +49,11 @@ export default {
     keys.map((key) => {
       const filterArray = [];
       let filterString = '';
-      state.filters[key].map(selectedValue => filterArray.push(`${key} eq '${selectedValue}'`));
+      state.filters[key].map((selectedValue) => {
+        // handle query string for numbers or strings, add quotes depending
+        const filter = typeof (selectedValue) === 'number' ? selectedValue : `'${selectedValue}'`;
+        return filterArray.push(`${key} eq ${filter}`);
+      });
       filterString += filterArray.join(' or ');
       return allFilters.push(filterString);
     });
@@ -57,6 +61,11 @@ export default {
     allFilters = allFilters.filter(f => f.length !== 0);
     allFiltersString = allFilters.join(' and ');
     state.filterString = allFiltersString;
+    state.filtersActive = !!state.filterString;
+  },
+  CLEAR_FILTERS(state) {
+    state.filters = {};
+    state.filterString = '';
   },
   SET_CURRENT_PAGE(state, page) {
     state.currentPage = page;

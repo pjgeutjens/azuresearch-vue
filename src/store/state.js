@@ -11,4 +11,5 @@ export default {
   resultsPerPage: 10,
   orderBy: '',
   resultsCount: 0,
+  filtersActive: false,
 };

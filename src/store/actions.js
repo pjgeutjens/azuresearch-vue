@@ -36,6 +36,10 @@ export default {
     dispatch('executeSearch');
   },
 
+  clearFilters({ commit }) {
+    commit('CLEAR_FILTERS');
+  },
+
   setCurrentPage({ dispatch, commit }, page) {
     commit('SET_CURRENT_PAGE', page);
     dispatch('executeSearch');

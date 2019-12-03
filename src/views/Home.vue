@@ -16,12 +16,16 @@
                     </span>
                   </b-list-group-item>
                 </b-list-group>
+                <ClearFilters />
               </li>
               <li v-for="facet in dropdown_facets" :key="facet.value" class="nav-item col-12">
                 <DropdownFacet v-bind:facet="facet" />
               </li>
               <li v-for="facet in checkbox_facets" :key="facet.value" class="nav-item col-12">
                 <CheckboxFacet v-bind:facet="facet" />
+              </li>
+              <li class="nav-item col-12">
+                <ClearFilters />
               </li>
             </ul>
           </div>
@@ -83,6 +87,7 @@
 import { mapState } from 'vuex';
 import CheckboxFacet from '@/components/CheckboxFacet.vue';
 import DropdownFacet from '@/components/DropdownFacet.vue';
+import ClearFilters from '@/components/ClearFilters.vue';
 import ResultItem from '@/components/ResultItem.vue';
 
 export default {
@@ -90,6 +95,7 @@ export default {
   components: {
     CheckboxFacet,
     DropdownFacet,
+    ClearFilters,
     ResultItem,
   },
   data() {
@@ -104,6 +110,7 @@ export default {
         { text: 'Price High to Low', value: 'price desc', disabled: false },
         { text: 'Sqft High to Low', value: 'sqft desc', disabled: false },
       ],
+      canClearFilters: false,
     };
   },
   methods: {
@@ -119,6 +126,7 @@ export default {
       'resultsCount',
       'checkbox_facets',
       'dropdown_facets',
+      'filtersActive',
     ]),
     showingStart() {
       return 1 + ((this.currentPage - 1) * this.resultsPerPage);
@@ -174,16 +182,6 @@ export default {
         return this.$store.state.results;
       },
     },
-    // checkbox_facets: {
-    //   get() {
-    //     return this.$store.state.checkbox_facets;
-    //   },
-    // },
-    // dropdown_facets: {
-    //   get() {
-    //     return this.$store.state.checkbox_facets;
-    //   },
-    // },
   },
 };
 </script>
@@ -204,6 +202,11 @@ export default {
 
   main {
     margin-top: 5px;
+  }
+
+  a.action-link {
+    cursor: pointer;
+    color: lightblue !important;
   }
 
   @media (min-width: 768px) {

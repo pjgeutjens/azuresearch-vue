@@ -36,12 +36,18 @@ export default {
     };
   },
   watch: {
-    selected() {
+    selected(newVal) {
+      if (typeof (newVal) !== 'string' || !newVal) return;
       const payload = {
         facet: this.facet.field,
         selected: this.selected,
       };
       this.$store.dispatch('setFilter', payload);
+    },
+    filters() {
+      if (!this.filters[this.facet.field]) {
+        this.selected = [];
+      }
     },
   },
   computed: {
