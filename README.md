@@ -19,6 +19,7 @@ Create a .env file containing the following values
 VUE_APP_SEARCHURL=<your search service url>
 VUE_APP_SEARCHKEY=<your query key>
 VUE_APP_CHECKBOX_FACETS=beds;baths
+VUE_APP_DROPDOWN_FACETS=type
 ```
 
 ### Compiles and hot-reloads for development
