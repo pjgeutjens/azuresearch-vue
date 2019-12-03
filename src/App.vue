@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-nav pills  align="left" class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Link4Vets</a>
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">azure-search-vue</a>
       <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
       <b-nav-item><router-link to="/about">About</router-link></b-nav-item>
   </b-nav>
